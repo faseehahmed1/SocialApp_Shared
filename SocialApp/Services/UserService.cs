@@ -5,7 +5,7 @@ using SocialApp.Middleware.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Services;
-public class UserController(IUserDataLayer userDataLayer) : IUserService
+public class UserService(IUserDataLayer userDataLayer) : IUserService
 {
     public async Task<List<UserModel>> GetAllUsersAsync()
     {

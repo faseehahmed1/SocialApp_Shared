@@ -31,7 +31,7 @@ builder.Services.AddScoped<IUserDataLayer, UserDataLayer>();
 builder.Services.AddScoped<ICommentDataLayer, CommentDataLayer>();
 
 builder.Services.AddScoped<IPostService, PostService>();
-builder.Services.AddScoped<IUserService, UserController>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddScoped<IValidator<CommentCreateDTO>, CommentCreateDTOValidator>();

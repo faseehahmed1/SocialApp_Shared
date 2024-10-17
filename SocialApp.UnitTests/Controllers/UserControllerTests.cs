@@ -59,8 +59,9 @@ public class UserControllerTests
         // Act
         ActionResult<List<UserResponseDTO>> result = await _userController.GetAllUsers();
         // Assert
-        result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(usersResponseDTO);
+        OkObjectResult okResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
+        okResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+        okResult.Value.Should().BeEquivalentTo(usersResponseDTO);
     }
 
     #endregion
