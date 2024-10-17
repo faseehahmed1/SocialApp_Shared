@@ -237,3 +237,9 @@ _Pvt_Extensions
 folders
 .idea/
 /Excel/Uploaded
+
+# Ignore compiled DLL 
+*.dll
+
+# Ignore cache files
+*.cache

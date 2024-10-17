@@ -58,10 +58,9 @@ public class UserControllerTests
         
         // Act
         ActionResult<List<UserResponseDTO>> result = await _userController.GetAllUsers();
-
         // Assert
-        result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.As<OkObjectResult>().Value.Should().BeEquivalentTo(usersResponseDTO);
+        result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(usersResponseDTO);
     }
 
     #endregion
@@ -191,8 +190,8 @@ public class UserControllerTests
         ActionResult<UserResponseDTO> result = await  _userController.CreateUser(userDTO);
 
         // Assert
-        result.Should().BeOfType<CreatedAtActionResult>().Which.StatusCode.Should().Be(StatusCodes.Status201Created);
-        CreatedAtActionResult? createdAtActionResult = result.As<CreatedAtActionResult>();
+        result.Result.Should().BeOfType<CreatedAtActionResult>().Which.StatusCode.Should().Be(StatusCodes.Status201Created);
+        CreatedAtActionResult? createdAtActionResult = result.Result.As<CreatedAtActionResult>();
         createdAtActionResult.Value.Should().BeEquivalentTo(userResponseDTO);
         createdAtActionResult.ActionName.Should().Be(nameof(_userController.GetUserByIdWithNavProps));
         createdAtActionResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(userId);
@@ -235,11 +234,11 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(updatedUser)).Returns(userResponseDTO);
         
         // Act
-        IActionResult result = await _userController.UpdateUser(userId, userDTO);
+        ActionResult<UserResponseDTO> result = await _userController.UpdateUser(userId, userDTO);
         
         // Assert
-        result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.As<OkObjectResult>().Value.Should().BeEquivalentTo(userResponseDTO);
+        result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(userResponseDTO);
     }
     #endregion
 
