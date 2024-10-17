@@ -11,7 +11,7 @@ namespace SocialApp.Controllers;
 public class CommentController(ICommentService commentService, IMapper mapper) : ControllerBase
 {
     [HttpGet($"{nameof(GetAllComments)}")]
-    public async Task<IActionResult> GetAllComments()
+    public async Task<ActionResult<CommentResponseDTO>> GetAllComments()
     {
         List<CommentModel> comments = await commentService.GetAllCommentsAsync();
         List<CommentResponseDTO> commentResponseDTO = mapper.Map<List<CommentResponseDTO>>(comments);
@@ -22,16 +22,17 @@ public class CommentController(ICommentService commentService, IMapper mapper) :
     public async Task<IActionResult> GetCommentByIdWithNavProps(int id, bool includeUser = false, bool includePost = false)
     {
         CommentModel? comment = await commentService.GetCommentByIdWithNavPropsAsync(id, includeUser, includePost);
+        if (comment == null) return NotFound();
         if (includeUser == false && includePost == false)
         {
             CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(comment);
             return Ok(commentResponseDTO);
         }
-        return comment == null ? NotFound() : Ok(comment);
+        return Ok(comment);
     }
 
     [HttpPost($"{nameof(CreateComment)}")]
-    public async Task<IActionResult> CreateComment([FromBody] CommentCreateDTO commentCreateDto)
+    public async Task<CreatedAtActionResult> CreateComment([FromBody] CommentCreateDTO commentCreateDto)
     {
         CommentModel comment = await commentService.CreateCommentAsync(commentCreateDto);
         CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(comment);
@@ -39,7 +40,7 @@ public class CommentController(ICommentService commentService, IMapper mapper) :
     }
 
     [HttpPut($"{nameof(UpdateComment)}/{{id}}")]
-    public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentUpdateDTO commentDto)
+    public async Task<ActionResult<CommentResponseDTO>> UpdateComment(int id, [FromBody] CommentUpdateDTO commentDto)
     {
         CommentModel updatedComment = await commentService.UpdateCommentAsync(id, commentDto);
         CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(updatedComment);

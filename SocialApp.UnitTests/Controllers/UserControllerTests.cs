@@ -187,14 +187,13 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).Returns(userResponseDTO);
         
         // Act
-        ActionResult<UserResponseDTO> result = await  _userController.CreateUser(userDTO);
+        CreatedAtActionResult result = await  _userController.CreateUser(userDTO);
 
         // Assert
-        result.Result.Should().BeOfType<CreatedAtActionResult>().Which.StatusCode.Should().Be(StatusCodes.Status201Created);
-        CreatedAtActionResult? createdAtActionResult = result.Result.As<CreatedAtActionResult>();
-        createdAtActionResult.Value.Should().BeEquivalentTo(userResponseDTO);
-        createdAtActionResult.ActionName.Should().Be(nameof(_userController.GetUserByIdWithNavProps));
-        createdAtActionResult.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(userId);
+        result.StatusCode.Should().Be(StatusCodes.Status201Created);
+        result.Value.Should().BeEquivalentTo(userResponseDTO);
+        result.ActionName.Should().Be(nameof(_userController.GetUserByIdWithNavProps));
+        result.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(userId);
     }
 
     #endregion

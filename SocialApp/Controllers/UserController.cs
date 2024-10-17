@@ -34,7 +34,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     }
 
     [HttpPost($"{nameof(CreateUser)}")]
-    public async Task<ActionResult<UserResponseDTO>> CreateUser([FromBody] UserDTO userDTO)
+    public async Task<CreatedAtActionResult> CreateUser([FromBody] UserDTO userDTO)
     {
         UserModel user = await userService.CreateUserAsync(userDTO);
         UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(user);
