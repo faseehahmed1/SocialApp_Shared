@@ -26,7 +26,7 @@ public class PostService(IPostDataLayer postDataLayer, IUserService userService)
 
     public async Task<PostModel> CreatePostAsync(PostCreateDTO postCreateDTO)
     {
-        var userExists = await userService.GetUserByIdWithIncludesAsync(postCreateDTO.UserId);
+        UserModel? userExists = await userService.GetUserByIdWithIncludesAsync(postCreateDTO.UserId);
         if (userExists == null)
         {
             throw new NotFoundException($"UserId {postCreateDTO.UserId} FK does not exist");

@@ -5,7 +5,7 @@ using SocialApp.Middleware.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Services;
-public class UserService(IUserDataLayer userDataLayer) : IUserService
+public class UserController(IUserDataLayer userDataLayer) : IUserService
 {
     public async Task<List<UserModel>> GetAllUsersAsync()
     {
@@ -17,9 +17,14 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
         return await userDataLayer.GetUserByIdWithNavPropsAsync(id, includePosts, includeComments);
     }
 
-    public async Task CreateUserAsync(UserModel userModel)
+    public async Task<UserModel> CreateUserAsync(UserDTO userDTO)
     {
-        await userDataLayer.CreateUserAsync(userModel);
+        UserModel user = new UserModel()
+        {
+            Name = userDTO.Name,
+            Email = userDTO.Email
+        };
+        return await userDataLayer.CreateUserAsync(user);
     }
 
     public async Task<UserModel> UpdateUserAsync(int id, UserDTO userDTO)

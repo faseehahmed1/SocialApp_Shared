@@ -22,7 +22,6 @@ public class CommentController(ICommentService commentService, IMapper mapper) :
     public async Task<IActionResult> GetCommentByIdWithNavProps(int id, bool includeUser = false, bool includePost = false)
     {
         CommentModel? comment = await commentService.GetCommentByIdWithNavPropsAsync(id, includeUser, includePost);
-
         if (includeUser == false && includePost == false)
         {
             CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(comment);

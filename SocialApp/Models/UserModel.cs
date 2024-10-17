@@ -12,6 +12,6 @@ public class UserModel
     public required string Email { get; set; }
 
     // Nav
-    public List<PostModel> Posts { get; set; } = new();
-    public List<CommentModel> Comments { get; set; } = new();
+    public List<PostModel> Posts { get; set; } = [];
+    public List<CommentModel> Comments { get; set; } = [];
 }

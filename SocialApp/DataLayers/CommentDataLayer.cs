@@ -9,14 +9,14 @@ public class CommentDataLayer(AppDbContext dbContext) : ICommentDataLayer
 {
     public async Task<List<CommentModel>> GetAllCommentsAsync()
     {
-        return await dbContext.Comments.ToListAsync();
+        return await dbContext.Comments.OrderBy(c => c.Id).ToListAsync();
     }
 
     public async Task<CommentModel?> GetCommentByIdWithNavPropsAsync(int commentId, bool includeUser, bool includePost)
     {
         IQueryable<CommentModel> query = dbContext.Comments.AsQueryable();
 
-        var loadOptions = (includeUser, includePost);
+        (bool includeUser, bool includePost) loadOptions = (includeUser, includePost);
 
         query = loadOptions switch
         {

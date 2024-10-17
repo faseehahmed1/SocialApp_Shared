@@ -9,14 +9,14 @@ public class PostDataLayer(AppDbContext dbContext) : IPostDataLayer
 {
     public async Task<List<PostModel>> GetAllPostsAsync()
     {
-        return await dbContext.Posts.ToListAsync();
+        return await dbContext.Posts.OrderBy(p => p.Id).ToListAsync();
     }
 
     public async Task<PostModel?> GetPostByIdWithNavPropsAsync(int id, bool includeUser, bool includeComments)
     {
         IQueryable<PostModel> query = dbContext.Posts.AsQueryable();
 
-        var loadOptions = (includeUser, includeComments);
+        (bool includeUser, bool includeComments) loadOptions = (includeUser, includeComments);
 
         query = loadOptions switch
         {

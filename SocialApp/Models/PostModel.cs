@@ -16,5 +16,5 @@ public class PostModel
 
     // Nav
     public UserModel User { get; set; } = null!; // Use null-forgiving operator if you know User will be initialized properly
-    public List<CommentModel> Comments { get; set; } = new();
+    public List<CommentModel> Comments { get; set; } = [];
 }

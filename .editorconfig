@@ -1,0 +1,14 @@
+# Indicates that this is the root .editorconfig file
+root = true
+
+# Code style rules for C# files
+[*.cs]
+
+# Do not use 'var' when the type is apparent
+csharp_style_var_when_type_is_apparent = false:error
+
+# Do not use 'var' for built-in types like int, string, etc.
+csharp_style_var_for_built_in_types = false:error
+
+# Enforce explicit type declarations in other cases
+csharp_style_var_elsewhere = false:error

@@ -13,7 +13,7 @@ using SocialApp.Services;
 using SocialApp.Validators;
 
 // You're starting to build the web application. Think of this like gathering all the parts to build a toy set. builder is going to hold all the pieces needed to make your app work.
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // This line is saying, "Hey, let's add support for Controllers in our app." Controllers are like the brain of the app. They decide what to do when someone sends a request to your web app
 builder.Services.AddControllers();
@@ -31,7 +31,7 @@ builder.Services.AddScoped<IUserDataLayer, UserDataLayer>();
 builder.Services.AddScoped<ICommentDataLayer, CommentDataLayer>();
 
 builder.Services.AddScoped<IPostService, PostService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserController>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddScoped<IValidator<CommentCreateDTO>, CommentCreateDTOValidator>();
@@ -61,7 +61,7 @@ builder.Services.AddAutoMapper(typeof(CommentProfile), typeof(UserProfile), type
 
 
 // Now you’re building the app.
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 

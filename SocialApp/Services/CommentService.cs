@@ -60,7 +60,7 @@ public class CommentService(ICommentDataLayer commentDataLayer, IValidator<Comme
 
     private async Task ValidateForeignKeysAsync(CommentCreateDTO commentCreateDTO)
     {
-        var validationResult = await commentCreateDTOValidator.ValidateAsync(commentCreateDTO);
+        FluentValidation.Results.ValidationResult validationResult = await commentCreateDTOValidator.ValidateAsync(commentCreateDTO);
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors);

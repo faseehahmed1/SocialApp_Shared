@@ -106,3 +106,4 @@
 /Users/faseehahmed/RiderProjects/SocialApp/SocialApp/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
 /Users/faseehahmed/RiderProjects/SocialApp/SocialApp/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
 /Users/faseehahmed/RiderProjects/SocialApp/SocialApp/bin/Debug/net8.0/AutoMapper.dll
+/Users/faseehahmed/RiderProjects/SocialApp/SocialApp/obj/Debug/net8.0/SocialApp.sourcelink.json

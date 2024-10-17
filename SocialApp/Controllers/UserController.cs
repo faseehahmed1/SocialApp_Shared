@@ -11,7 +11,7 @@ namespace SocialApp.Controllers;
 public class UserController(IUserService userService, IMapper mapper) : ControllerBase
 {
     [HttpGet($"{nameof(GetAllUsers)}")]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<ActionResult<List<UserResponseDTO>>> GetAllUsers()
     {
         List<UserModel> users = await userService.GetAllUsersAsync();
         List<UserResponseDTO> userResponseDTO = mapper.Map<List<UserResponseDTO>>(users);
@@ -22,26 +22,29 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     public async Task<IActionResult> GetUserByIdWithNavProps(int id, [FromQuery] bool includePosts = false, [FromQuery] bool includeComments = false)
     {
         UserModel? user = await userService.GetUserByIdWithIncludesAsync(id, includePosts, includeComments);
+        if (user == null) return NotFound();
+
         if (includePosts == false && includeComments == false)
         {
             UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(user);
             return Ok(userResponseDTO);
         }
-        return user == null ? NotFound() : Ok(user);
+
+        return Ok(user);
     }
 
     [HttpPost($"{nameof(CreateUser)}")]
-    public async Task<IActionResult> CreateUser([FromBody] UserModel user)
+    public async Task<ActionResult<UserResponseDTO>> CreateUser([FromBody] UserDTO userDTO)
     {
-        await userService.CreateUserAsync(user);
+        UserModel user = await userService.CreateUserAsync(userDTO);
         UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(user);
         return CreatedAtAction(nameof(GetUserByIdWithNavProps), new { id = user.Id }, userResponseDTO);
     }
 
     [HttpPut($"{nameof(UpdateUser)}/{{id}}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO user)
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO userDTO)
     {
-        UserModel updatedUser = await userService.UpdateUserAsync(id, user);
+        UserModel updatedUser = await userService.UpdateUserAsync(id, userDTO);
         UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(updatedUser);
         return Ok(userResponseDTO);
     }
