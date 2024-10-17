@@ -42,7 +42,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     }
 
     [HttpPut($"{nameof(UpdateUser)}/{{id}}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO userDTO)
+    public async Task<ActionResult<UserResponseDTO>> UpdateUser(int id, [FromBody] UserDTO userDTO)
     {
         UserModel updatedUser = await userService.UpdateUserAsync(id, userDTO);
         UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(updatedUser);
