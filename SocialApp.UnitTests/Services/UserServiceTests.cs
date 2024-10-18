@@ -43,6 +43,7 @@ public class UserServiceTests
         
         //Act
         List<UserModel> result = await _userService.GetAllUsersAsync();
+        
         //Assert
         result.Should().HaveCount(expectedUsers.Count);
         result.Should().BeEquivalentTo(expectedUsers);
@@ -70,6 +71,7 @@ public class UserServiceTests
             };
 
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments)).Returns(Task.FromResult<UserModel?>(expectedUser));
+        
         //Act
         UserModel? result = await _userService.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
 
@@ -95,6 +97,7 @@ public class UserServiceTests
         };
 
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments)).Returns(Task.FromResult<UserModel?>(expectedUser));
+        
         //Act
         UserModel? result = await _userService.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
 
@@ -118,14 +121,6 @@ public class UserServiceTests
         {
             Name = name,
             Email = email,
-        };
-        
-        UserModel user = new UserModel()
-        {
-            Name = name,
-            Email = email,
-            Comments = [],
-            Posts = []
         };
         
         UserModel createdUser = new UserModel()
@@ -183,8 +178,7 @@ public class UserServiceTests
         };
         
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(existingUser);
-        A.CallTo(() => _fakeUserDataLayer.UpdateUserAsync(A<UserModel>.That.Matches(u => 
-                                                          u.Id == userId && u.Name == name && u.Email == email))).Returns(updatedUser);
+   
         //Act
         UserModel result = await _userService.UpdateUserAsync(userId, userDTO);
 
@@ -250,7 +244,7 @@ public class UserServiceTests
     }
     
     [Test]
-    public async Task DeleteUserAsync_WhenUserDoesNotExist_ReturnsTrue()
+    public async Task DeleteUserAsync_WhenUserDoesNotExist_ReturnsFalse()
     {
         //Arrange
         const int userId = 5;

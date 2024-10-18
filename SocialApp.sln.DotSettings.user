@@ -18,6 +18,7 @@
     &lt;TestId&gt;NUnit3x::211BE2B3-9088-453D-93E3-0DCA0B8DD6A3::net8.0::SocialApp.UnitTests.Services.UserServiceTests.GetAllUsers_WhenCalled_ReturnsOkResultWithUsers&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=de6b0fc0_002Dfc7b_002D46a8_002Dadc6_002Dbd9ccbcc009f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>

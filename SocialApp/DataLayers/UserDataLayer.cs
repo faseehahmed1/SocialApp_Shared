@@ -37,11 +37,10 @@ public class UserDataLayer(AppDbContext dbContext) : IUserDataLayer
         return user;
     }
 
-    public async Task<UserModel> UpdateUserAsync(UserModel user)
+    public async Task UpdateUserAsync(UserModel user)
     {
         dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
-        return user;
     }
 
     public async Task DeleteUserAsync(UserModel user)

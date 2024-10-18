@@ -50,7 +50,7 @@ public class CommentControllerTests
                     Content = content,
                     UserId = userId
                 },
-                User = new()
+                User = new UserModel
                 {
                     Name = "Ben",
                     Email = "ben@hotmail.com"
@@ -109,7 +109,7 @@ public class CommentControllerTests
                     Content = content,
                     UserId = userId
                 },
-                User = new()
+                User = new UserModel
                 {
                     Name = "Ben",
                     Email = "ben@hotmail.com"
@@ -152,7 +152,7 @@ public class CommentControllerTests
                     Content = content,
                     UserId = userId
                 },
-                User = new()
+                User = new UserModel
                 {
                     Name = "Ben",
                     Email = "ben@hotmail.com"
@@ -235,7 +235,7 @@ public class CommentControllerTests
                     Content = content,
                     UserId = userId
                 },
-                User = new()
+                User = new UserModel
                 {
                     Name = "Ben",
                     Email = "ben@hotmail.com"
@@ -297,7 +297,7 @@ public class CommentControllerTests
                     Content = content,
                     UserId = userId
                 },
-                User = new()
+                User = new UserModel
                 {
                     Name = "Ben",
                     Email = "ben@hotmail.com"

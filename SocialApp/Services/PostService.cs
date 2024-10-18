@@ -42,7 +42,7 @@ public class PostService(IPostDataLayer postDataLayer, IUserService userService)
         return post;
     }
 
-    public async Task<PostModel> UpdatePostAsync(int postId, PostUpdateDTO postCreateDTO)
+    public async Task<PostModel> UpdatePostAsync(int postId, PostUpdateDTO postUpdateDTO)
     {
         PostModel? existingPost = await GetPostByIdWithNavPropsAsync(postId);
         if (existingPost == null)
@@ -50,8 +50,8 @@ public class PostService(IPostDataLayer postDataLayer, IUserService userService)
             throw new NotFoundException($"Post with ID {postId} not found");
         }
 
-        existingPost.Title = postCreateDTO.Title;
-        existingPost.Content = postCreateDTO.Content;
+        existingPost.Title = postUpdateDTO.Title;
+        existingPost.Content = postUpdateDTO.Content;
         await postDataLayer.UpdatePostAsync(existingPost);
         return existingPost;
     }
@@ -59,10 +59,7 @@ public class PostService(IPostDataLayer postDataLayer, IUserService userService)
     public async Task<bool> DeletePostAsync(int id)
     {
         PostModel? existingPost = await postDataLayer.GetPostByIdWithNavPropsAsync(id);
-        if (existingPost == null)
-        {
-            return false;
-        }
+        if (existingPost == null) return false;
         await postDataLayer.DeletePostAsync(existingPost);
         return true;
     }

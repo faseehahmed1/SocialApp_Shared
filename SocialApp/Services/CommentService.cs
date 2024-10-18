@@ -33,7 +33,7 @@ public class CommentService(ICommentDataLayer commentDataLayer, IValidator<Comme
         return comment;
     }
 
-    public async Task<CommentModel> UpdateCommentAsync(int commentId, CommentUpdateDTO commentCreateDTO)
+    public async Task<CommentModel> UpdateCommentAsync(int commentId, CommentUpdateDTO commentUpdateDTO)
     {
         CommentModel? existingComment = await GetCommentByIdWithNavPropsAsync(commentId);
         if (existingComment == null)
@@ -41,7 +41,7 @@ public class CommentService(ICommentDataLayer commentDataLayer, IValidator<Comme
             throw new NotFoundException($"Comment with ID {commentId} not found");
         }
 
-        existingComment.Text = commentCreateDTO.Text;
+        existingComment.Text = commentUpdateDTO.Text;
 
         await commentDataLayer.UpdateCommentAsync(existingComment);
         return existingComment;

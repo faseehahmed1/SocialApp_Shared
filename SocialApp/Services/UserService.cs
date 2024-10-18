@@ -37,7 +37,8 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
 
         existingUser.Name = userDTO.Name;
         existingUser.Email = userDTO.Email;
-        return await userDataLayer.UpdateUserAsync(existingUser);
+        await userDataLayer.UpdateUserAsync(existingUser);
+        return existingUser;
     }
 
     public async Task<bool> DeleteUserAsync(int id)

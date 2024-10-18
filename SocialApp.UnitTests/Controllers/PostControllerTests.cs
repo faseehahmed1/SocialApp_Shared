@@ -43,7 +43,7 @@ public class PostControllerTests
                 Content = content,
                 UserId = userId,
                 Comments = [],
-                User = new()
+                User = new UserModel
                 {
                     Id = userId,
                     Name = "Ben",
@@ -93,7 +93,7 @@ public class PostControllerTests
             Content = content,
             UserId = userId,
             Comments = [],
-            User = new()
+            User = new UserModel
             {
                 Id = userId,
                 Name = "Ben",
@@ -138,7 +138,7 @@ public class PostControllerTests
             Content = content,
             UserId = userId,
             Comments = [],
-            User = new()
+            User = new UserModel
             {
                 Id = userId,
                 Name = "Ben",
