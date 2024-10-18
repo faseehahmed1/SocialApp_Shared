@@ -1,4 +1,4 @@
-using SocialApp.Contracts.DataLayer;
+using SocialApp.Contracts.DataLayers;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
 using SocialApp.Middleware.Exceptions;
@@ -12,7 +12,7 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
         return await userDataLayer.GetAllUsersAsync();
     }
 
-    public async Task<UserModel?> GetUserByIdWithIncludesAsync(int id, bool includePosts = false, bool includeComments = false)
+    public async Task<UserModel?> GetUserByIdWithNavPropsAsync(int id, bool includePosts = false, bool includeComments = false)
     {
         return await userDataLayer.GetUserByIdWithNavPropsAsync(id, includePosts, includeComments);
     }
@@ -29,7 +29,7 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
 
     public async Task<UserModel> UpdateUserAsync(int id, UserDTO userDTO)
     {
-        UserModel? existingUser = await GetUserByIdWithIncludesAsync(id);
+        UserModel? existingUser = await GetUserByIdWithNavPropsAsync(id);
         if (existingUser == null)
         {
             throw new NotFoundException($"User with id: {id} does not exist");
@@ -42,7 +42,7 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
 
     public async Task<bool> DeleteUserAsync(int id)
     {
-        UserModel? user = await GetUserByIdWithIncludesAsync(id);
+        UserModel? user = await GetUserByIdWithNavPropsAsync(id);
         if (user == null) return false;
         await userDataLayer.DeleteUserAsync(user);
         return true;

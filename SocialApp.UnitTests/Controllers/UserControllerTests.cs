@@ -91,7 +91,7 @@ public class UserControllerTests
             Email = "messi@hotmail.com",
         };
 
-        A.CallTo(() => _fakeUserService.GetUserByIdWithIncludesAsync(userId, includePosts,includeComments )).Returns(Task.FromResult<UserModel?>(user));
+        A.CallTo(() => _fakeUserService.GetUserByIdWithNavPropsAsync(userId, includePosts,includeComments )).Returns(Task.FromResult<UserModel?>(user));
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).Returns(userResponseDTO);
         
         // Act
@@ -119,7 +119,7 @@ public class UserControllerTests
             Comments = []
         };
 
-        A.CallTo(() => _fakeUserService.GetUserByIdWithIncludesAsync(userId, includePosts,includeComments )).Returns(Task.FromResult<UserModel?>(user));
+        A.CallTo(() => _fakeUserService.GetUserByIdWithNavPropsAsync(userId, includePosts,includeComments )).Returns(Task.FromResult<UserModel?>(user));
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).MustNotHaveHappened();
         
         // Act
@@ -139,7 +139,7 @@ public class UserControllerTests
 
         UserModel? user = null;
 
-        A.CallTo(() => _fakeUserService.GetUserByIdWithIncludesAsync(userId, false,false )).Returns(Task.FromResult(user));
+        A.CallTo(() => _fakeUserService.GetUserByIdWithNavPropsAsync(userId, false,false )).Returns(Task.FromResult(user));
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).MustNotHaveHappened();
         
         // Act

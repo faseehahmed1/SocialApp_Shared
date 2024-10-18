@@ -21,7 +21,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     [HttpGet($"{nameof(GetUserByIdWithNavProps)}/{{id}}")]
     public async Task<IActionResult> GetUserByIdWithNavProps(int id, [FromQuery] bool includePosts = false, [FromQuery] bool includeComments = false)
     {
-        UserModel? user = await userService.GetUserByIdWithIncludesAsync(id, includePosts, includeComments);
+        UserModel? user = await userService.GetUserByIdWithNavPropsAsync(id, includePosts, includeComments);
         if (user == null) return NotFound();
 
         if (includePosts == false && includeComments == false)

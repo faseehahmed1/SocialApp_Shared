@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SocialApp.Constants;
-using SocialApp.Contracts.DataLayer;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.Contracts.Services;
 using SocialApp.Data;

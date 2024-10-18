@@ -9,7 +9,7 @@ public class CommentCreateDTOValidator : AbstractValidator<CommentCreateDTO>
     public CommentCreateDTOValidator(IUserService userService, IPostService postService)
     {
         RuleFor(comment => comment.UserId)
-            .MustAsync(async (userId, _) => await userService.GetUserByIdWithIncludesAsync(userId) != null)
+            .MustAsync(async (userId, _) => await userService.GetUserByIdWithNavPropsAsync(userId) != null)
             .WithMessage("UserId {PropertyValue} does not exist.");
 
         RuleFor(comment => comment.PostId)

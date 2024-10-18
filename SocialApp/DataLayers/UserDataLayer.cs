@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SocialApp.Contracts.DataLayer;
+using SocialApp.Contracts.DataLayers;
 using SocialApp.Data;
 using SocialApp.Models;
 
@@ -12,7 +12,7 @@ public class UserDataLayer(AppDbContext dbContext) : IUserDataLayer
         return await dbContext.Users.OrderBy(u => u.Id).ToListAsync();
     }
 
-    public async Task<UserModel?> GetUserByIdWithNavPropsAsync(int id, bool includePosts, bool includeComments)
+    public async Task<UserModel?> GetUserByIdWithNavPropsAsync(int id, bool includePosts = false, bool includeComments = false)
     {
         IQueryable<UserModel> query = dbContext.Users.AsQueryable();
 
