@@ -186,6 +186,30 @@ public class PostControllerTests
     }
     #endregion
 
+    #region GetPostsByUserId
+
+    [Test]
+    public async Task GetPostsByUserId_WhenCalledWithUserId_ReturnsPostsForGivenUserId()
+    {
+        //Arrange
+        const int userId = 4;
+        List<PostModel> posts= [];
+        List<PostResponseDTO> postResponseDtos = [];
+
+        A.CallTo(() => _fakePostService.GetPostsByUserIdAsync(userId)).Returns(posts);
+        A.CallTo(() => _fakeMapper.Map<List<PostResponseDTO>>(posts)).Returns(postResponseDtos);
+        
+        //Act
+        ActionResult<List<PostResponseDTO>> result = await _postController.GetPostsByUserId(userId);
+
+        //Assert
+        result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(postResponseDtos);
+
+    }
+
+    #endregion
+
     #region CreatePost
 
     [Test]

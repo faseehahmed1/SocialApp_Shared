@@ -100,7 +100,84 @@ public class CommentServiceTests
 
     #endregion
 
+    #region CreateCommentAsync
 
+    [Test]
+    public async Task CreateCommentAsync_WhenCommentExists_ReturnsUpdatedComment()
+    {
+        //Arrange
+        const int userId = 3;
+        const int postId = 5;
+        const string text = "comment text";
+
+        CommentCreateDTO commentCreateDTO = new CommentCreateDTO()
+        {
+            UserId = userId,
+            PostId = postId,
+            Text = text
+        };
+        
+        CommentModel comment = new CommentModel()
+        {
+            UserId = userId,
+            PostId = postId,
+            Text = text
+        };
+        
+        FluentValidation.Results.ValidationResult validationResult = new();
+        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None))
+            .Returns(Task.FromResult(validationResult));
+        
+        //Act
+        CommentModel result = await _commentService.CreateCommentAsync(commentCreateDTO);
+
+        //Assert
+        result.Should().BeEquivalentTo(comment);
+        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => _fakeCommentDataLayer.CreateCommentAsync(A<CommentModel>.That.Matches(c=>c.Text == text && c.UserId == userId && c.PostId == postId))).MustHaveHappenedOnceExactly();
+
+    }
+    
+    [Test]
+    public async Task CreateCommentAsync_WhenCommentDoesNotExist_ThrowsValidationException()
+    {
+        //Arrange
+        const int userId = 3;
+        const int postId = 5;
+        const string text = "comment text";
+
+        CommentCreateDTO commentCreateDTO = new CommentCreateDTO()
+        {
+            UserId = userId,
+            PostId = postId,
+            Text = text
+        };
+        
+        CommentModel comment = new CommentModel()
+        {
+            UserId = userId,
+            PostId = postId,
+            Text = text
+        };
+        
+        FluentValidation.Results.ValidationResult validationResult = new(
+            new List<FluentValidation.Results.ValidationFailure>
+            {
+                new("UserId", "UserId does not exist.")
+            });
+        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None))
+            .Returns(Task.FromResult(validationResult));
+        
+        //Act && Assert
+        ExceptionAssertions<ValidationException> exception = await FluentActions
+            .Invoking(() => _commentService.CreateCommentAsync(commentCreateDTO)).Should()
+            .ThrowAsync<ValidationException>();
+
+        //Assert
+        exception.Which.Errors.Should().Contain(failure => failure.ErrorMessage == "UserId does not exist.");
+    }
+
+    #endregion
 
     #region UpdateCommentAsync
 
