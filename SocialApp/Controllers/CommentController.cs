@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Controllers;
@@ -42,9 +44,16 @@ public class CommentController(ICommentService commentService, IMapper mapper) :
     [HttpPut($"{nameof(UpdateComment)}/{{id}}")]
     public async Task<ActionResult<CommentResponseDTO>> UpdateComment(int id, [FromBody] CommentUpdateDTO commentDto)
     {
-        CommentModel updatedComment = await commentService.UpdateCommentAsync(id, commentDto);
-        CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(updatedComment);
-        return Ok(commentResponseDTO);
+        try
+        {
+            CommentModel updatedComment = await commentService.UpdateCommentAsync(id, commentDto);
+            CommentResponseDTO commentResponseDTO = mapper.Map<CommentResponseDTO>(updatedComment);
+            return Ok(commentResponseDTO);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 
     [HttpDelete($"{nameof(DeleteComment)}/{{id}}")]

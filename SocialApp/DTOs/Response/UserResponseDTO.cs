@@ -1,4 +1,4 @@
-namespace SocialApp.DTOs;
+namespace SocialApp.DTOs.Response;
 
 public class UserResponseDTO
 {

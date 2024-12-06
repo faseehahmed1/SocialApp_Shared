@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialApp.Contracts.Services;
 using SocialApp.Controllers;
 using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
 using SocialApp.Models;
 
 namespace SocialApp.UnitTests.Controllers;

@@ -6,7 +6,6 @@ using SocialApp.Contracts.Services;
 using SocialApp.Data;
 using SocialApp.DataLayers;
 using SocialApp.DTOs;
-using SocialApp.Middleware;
 using SocialApp.Profiles;
 using SocialApp.Services;
 using SocialApp.Validators;
@@ -61,8 +60,6 @@ builder.Services.AddAutoMapper(typeof(CommentProfile), typeof(UserProfile), type
 
 // Now you’re building the app.
 WebApplication app = builder.Build();
-
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseCors("AllowAllOrigins");
 

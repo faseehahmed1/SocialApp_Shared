@@ -2,7 +2,7 @@ using FluentValidation;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
-using SocialApp.Middleware.Exceptions;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Services;

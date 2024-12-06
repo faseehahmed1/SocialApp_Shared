@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialApp.Contracts.Services;
 using SocialApp.Controllers;
 using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
 using SocialApp.Models;
 
 namespace SocialApp.UnitTests.Controllers;
@@ -100,14 +101,6 @@ public class PostControllerTests
                 Email = "ben@hotmail.com"
             }
         };
-
-        PostResponseDTO postResponseDTO = new()
-            {
-                Id = 1,
-                Title = title,
-                Content = content,
-                UserId = userId
-            };
 
         A.CallTo(() => _fakePostService.GetPostByIdWithNavPropsAsync(userId, true, true))
             .Returns(Task.FromResult<PostModel?>(post));

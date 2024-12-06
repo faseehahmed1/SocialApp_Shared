@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Controllers;
@@ -44,9 +46,16 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     [HttpPut($"{nameof(UpdateUser)}/{{id}}")]
     public async Task<ActionResult<UserResponseDTO>> UpdateUser(int id, [FromBody] UserDTO userDTO)
     {
-        UserModel updatedUser = await userService.UpdateUserAsync(id, userDTO);
-        UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(updatedUser);
-        return Ok(userResponseDTO);
+        try
+        {
+            UserModel updatedUser = await userService.UpdateUserAsync(id, userDTO);
+            UserResponseDTO userResponseDTO = mapper.Map<UserResponseDTO>(updatedUser);
+            return Ok(userResponseDTO);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 
     [HttpDelete($"{nameof(DeleteUser)}/{{id}}")]

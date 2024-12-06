@@ -3,7 +3,7 @@ using FluentAssertions;
 using FluentAssertions.Specialized;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.DTOs;
-using SocialApp.Middleware.Exceptions;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 using SocialApp.Services;
 
@@ -159,15 +159,6 @@ public class UserServiceTests
             Email = email,
         };
         
-        UserModel existingUser = new UserModel()
-        {
-            Id = userId,
-            Name = "Sam",
-            Email = "sam@hotmail.com",
-            Comments = [],
-            Posts = []
-        };
-        
         UserModel updatedUser = new UserModel()
         {
             Id = userId,
@@ -177,7 +168,7 @@ public class UserServiceTests
             Posts = []
         };
         
-        A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(existingUser);
+        A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(updatedUser);
    
         //Act
         UserModel result = await _userService.UpdateUserAsync(userId, userDTO);

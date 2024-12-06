@@ -2,6 +2,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 
 namespace SocialApp.Controllers;
@@ -50,9 +52,16 @@ public class PostController(IPostService postService, IMapper mapper) : Controll
     [HttpPut($"{nameof(UpdatePost)}/{{id}}")]
     public async Task<ActionResult<PostResponseDTO>> UpdatePost(int id, [FromBody] PostUpdateDTO postUpdateDto)
     {
-        PostModel updatedPost = await postService.UpdatePostAsync(id, postUpdateDto);
-        PostResponseDTO postResponseDTO = mapper.Map<PostResponseDTO>(updatedPost);
-        return Ok(postResponseDTO);
+        try
+        {
+            PostModel updatedPost = await postService.UpdatePostAsync(id, postUpdateDto);
+            PostResponseDTO postResponseDTO = mapper.Map<PostResponseDTO>(updatedPost);
+            return Ok(postResponseDTO);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 
     [HttpDelete($"{nameof(DeletePost)}/{{id}}")]

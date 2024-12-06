@@ -4,7 +4,7 @@ using FluentAssertions.Specialized;
 using FluentValidation;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.DTOs;
-using SocialApp.Middleware.Exceptions;
+using SocialApp.Exceptions;
 using SocialApp.Models;
 using SocialApp.Services;
 
@@ -147,13 +147,6 @@ public class CommentServiceTests
         const string text = "comment text";
 
         CommentCreateDTO commentCreateDTO = new CommentCreateDTO()
-        {
-            UserId = userId,
-            PostId = postId,
-            Text = text
-        };
-        
-        CommentModel comment = new CommentModel()
         {
             UserId = userId,
             PostId = postId,

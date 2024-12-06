@@ -1,5 +1,5 @@
 using AutoMapper;
-using SocialApp.DTOs;
+using SocialApp.DTOs.Response;
 using SocialApp.Models;
 
 namespace SocialApp.Profiles;
