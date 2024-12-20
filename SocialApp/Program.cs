@@ -1,19 +1,15 @@
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SocialApp.Constants;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.Contracts.Services;
 using SocialApp.Data;
 using SocialApp.DataLayers;
-using SocialApp.DTOs;
 using SocialApp.Profiles;
 using SocialApp.Services;
-using SocialApp.Validators;
 
 // You're starting to build the web application. Think of this like gathering all the parts to build a toy set. builder is going to hold all the pieces needed to make your app work.
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// This line is saying, "Hey, let's add support for Controllers in our app." Controllers are like the brain of the app. They decide what to do when someone sends a request to your web app
 builder.Services.AddControllers();
 
 // This is where you're telling the app, "I need to talk to a database."
@@ -31,8 +27,6 @@ builder.Services.AddScoped<ICommentDataLayer, CommentDataLayer>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-
-builder.Services.AddScoped<IValidator<CommentCreateDTO>, CommentCreateDTOValidator>();
 
 // This is saying, "When you're sending or receiving JSON (data format like a message), make sure to avoid infinite loops when you have related data."
 builder.Services.AddControllers().AddJsonOptions(options =>

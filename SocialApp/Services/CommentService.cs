@@ -1,4 +1,3 @@
-using FluentValidation;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.Contracts.Services;
 using SocialApp.DTOs;
@@ -7,7 +6,7 @@ using SocialApp.Models;
 
 namespace SocialApp.Services;
 
-public class CommentService(ICommentDataLayer commentDataLayer, IValidator<CommentCreateDTO> commentCreateDTOValidator) : ICommentService
+public class CommentService(ICommentDataLayer commentDataLayer, IUserDataLayer userDataLayer, IPostDataLayer postDataLayer) : ICommentService
 {
     public async Task<List<CommentModel>> GetAllCommentsAsync()
     {
@@ -60,10 +59,17 @@ public class CommentService(ICommentDataLayer commentDataLayer, IValidator<Comme
 
     private async Task ValidateForeignKeysAsync(CommentCreateDTO commentCreateDTO)
     {
-        FluentValidation.Results.ValidationResult validationResult = await commentCreateDTOValidator.ValidateAsync(commentCreateDTO);
-        if (!validationResult.IsValid)
+        UserModel? user = await userDataLayer.GetUserByIdWithNavPropsAsync(commentCreateDTO.UserId);
+        if (user == null)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new NotFoundException($"User ID {commentCreateDTO.UserId} not found");
+        }
+
+        PostModel? post = await postDataLayer.GetPostByIdWithNavPropsAsync(commentCreateDTO.PostId);
+        if (post == null)
+        {
+            throw new NotFoundException($"Post ID {commentCreateDTO.PostId} not found");
+
         }
     }
 }
