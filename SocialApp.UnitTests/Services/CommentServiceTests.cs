@@ -1,7 +1,6 @@
 using FakeItEasy;
 using FluentAssertions;
 using FluentAssertions.Specialized;
-using FluentValidation;
 using SocialApp.Contracts.DataLayers;
 using SocialApp.DTOs;
 using SocialApp.Exceptions;
@@ -13,15 +12,17 @@ namespace SocialApp.UnitTests.Services;
 public class CommentServiceTests
 {
     private ICommentDataLayer _fakeCommentDataLayer;
-    private IValidator<CommentCreateDTO> _fakeCommentValidator;
+    private IUserDataLayer _fakeUserDataLayer;
+    private IPostDataLayer _fakePostDataLayer;
     private CommentService _commentService;
-
+    
     [SetUp]
     public void SetUp()
     {
         _fakeCommentDataLayer = A.Fake<ICommentDataLayer>();
-        _fakeCommentValidator = A.Fake<IValidator<CommentCreateDTO>>();
-        _commentService = new CommentService(_fakeCommentDataLayer, _fakeCommentValidator);
+        _fakeUserDataLayer = A.Fake<IUserDataLayer>();
+        _fakePostDataLayer = A.Fake<IPostDataLayer>();
+        _commentService = new CommentService(_fakeCommentDataLayer, _fakeUserDataLayer, _fakePostDataLayer);
     }
 
     #region GetAllCommentsAsync
@@ -103,7 +104,7 @@ public class CommentServiceTests
     #region CreateCommentAsync
 
     [Test]
-    public async Task CreateCommentAsync_WhenCommentExists_ReturnsUpdatedComment()
+    public async Task CreateCommentAsync_WhenForeignKeysAreValid_CreatesAComment()
     {
         //Arrange
         const int userId = 3;
@@ -124,22 +125,39 @@ public class CommentServiceTests
             Text = text
         };
         
-        FluentValidation.Results.ValidationResult validationResult = new();
-        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None))
-            .Returns(Task.FromResult(validationResult));
+         UserModel user = new UserModel()
+        {
+            Id = userId,
+            Name = "Ben",
+            Email = "Ben@homtail.com"
+        };
+
+         PostModel post = new PostModel()
+        {
+            Id = postId,
+            UserId = userId,
+            Title = "Title here",
+            Content = "Hello World"
+        };
+
+
+        A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(commentCreateDTO.UserId, false, false))
+            .Returns(Task.FromResult<UserModel?>(user));
+        
+        A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(commentCreateDTO.PostId, false, false))
+            .Returns(Task.FromResult<PostModel?>(post));
         
         //Act
         CommentModel result = await _commentService.CreateCommentAsync(commentCreateDTO);
 
         //Assert
         result.Should().BeEquivalentTo(comment);
-        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None)).MustHaveHappenedOnceExactly();
         A.CallTo(() => _fakeCommentDataLayer.CreateCommentAsync(A<CommentModel>.That.Matches(c=>c.Text == text && c.UserId == userId && c.PostId == postId))).MustHaveHappenedOnceExactly();
 
     }
     
     [Test]
-    public async Task CreateCommentAsync_WhenCommentDoesNotExist_ThrowsValidationException()
+    public async Task CreateCommentAsync_WhenForeignKeysAreInValid_ThrowsNotFoundValidationException()
     {
         //Arrange
         const int userId = 3;
@@ -152,23 +170,19 @@ public class CommentServiceTests
             PostId = postId,
             Text = text
         };
+        A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(commentCreateDTO.UserId, false, false))
+            .Returns(Task.FromResult<UserModel?>(null));
         
-        FluentValidation.Results.ValidationResult validationResult = new(
-            new List<FluentValidation.Results.ValidationFailure>
-            {
-                new("UserId", "UserId does not exist.")
-            });
-        A.CallTo(() => _fakeCommentValidator.ValidateAsync(commentCreateDTO, CancellationToken.None))
-            .Returns(Task.FromResult(validationResult));
+        A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(commentCreateDTO.PostId, false, false))
+            .Returns(Task.FromResult<PostModel?>(null));
         
         //Act && Assert
-        ExceptionAssertions<ValidationException> exception = await FluentActions
+        ExceptionAssertions<NotFoundException> exception = await FluentActions
             .Invoking(() => _commentService.CreateCommentAsync(commentCreateDTO)).Should()
-            .ThrowAsync<ValidationException>();
+            .ThrowAsync<NotFoundException>();
 
         //Assert
-        exception.Which.Errors.Should().Contain(failure => failure.ErrorMessage == "UserId does not exist.");
-    }
+        exception.WithMessage($"User ID {commentCreateDTO.UserId} not found");    }
 
     #endregion
 
