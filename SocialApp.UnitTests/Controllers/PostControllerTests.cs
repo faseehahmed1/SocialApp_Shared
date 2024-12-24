@@ -15,14 +15,14 @@ public class PostControllerTests
 {
     private IPostService _fakePostService;
     private IMapper _fakeMapper;
-    private PostController _postController;
+    private PostController _controller;
 
     [SetUp]
     public void SetUp()
     {
         _fakePostService = A.Fake<IPostService>();
         _fakeMapper = A.Fake<IMapper>();
-        _postController = new PostController(_fakePostService, _fakeMapper);
+        _controller = new PostController(_fakePostService, _fakeMapper);
     }
 
     #region GetAllPosts
@@ -67,7 +67,7 @@ public class PostControllerTests
         A.CallTo(() => _fakeMapper.Map<List<PostResponseDTO>>(posts)).Returns(postsDTO);
         
         // Act
-        ActionResult<PostResponseDTO> result = await _postController.GetAllPosts();
+        ActionResult<PostResponseDTO> result = await _controller.GetAllPosts();
 
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -109,7 +109,7 @@ public class PostControllerTests
         
                 
         // Act
-        IActionResult result = await _postController.GetPostByIdWithNavProps(userId, true, true);
+        IActionResult result = await _controller.GetPostByIdWithNavProps(userId, true, true);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -153,7 +153,7 @@ public class PostControllerTests
         
                 
         // Act
-        IActionResult result = await _postController.GetPostByIdWithNavProps(userId);
+        IActionResult result = await _controller.GetPostByIdWithNavProps(userId);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -172,7 +172,7 @@ public class PostControllerTests
             .Returns(Task.FromResult(post));
                 
         // Act
-        IActionResult result = await _postController.GetPostByIdWithNavProps(userId);
+        IActionResult result = await _controller.GetPostByIdWithNavProps(userId);
 
         // Assert
         result.Should().BeOfType<NotFoundResult>().Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
@@ -193,7 +193,7 @@ public class PostControllerTests
         A.CallTo(() => _fakeMapper.Map<List<PostResponseDTO>>(posts)).Returns(postResponseDtos);
         
         //Act
-        ActionResult<List<PostResponseDTO>> result = await _postController.GetPostsByUserId(userId);
+        ActionResult<List<PostResponseDTO>> result = await _controller.GetPostsByUserId(userId);
 
         //Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -249,12 +249,12 @@ public class PostControllerTests
         A.CallTo(() => _fakeMapper.Map<PostResponseDTO>(post)).Returns(postResponseDTO);
         
         // Act
-        CreatedAtActionResult result = await _postController.CreatePost(postCreateDTO);
+        CreatedAtActionResult result = await _controller.CreatePost(postCreateDTO);
         
         // Assert
         result.StatusCode.Should().Be(StatusCodes.Status201Created);
         result.Value.Should().BeEquivalentTo(postResponseDTO);
-        result.ActionName.Should().Be(nameof(_postController.GetPostByIdWithNavProps));
+        result.ActionName.Should().Be(nameof(_controller.GetPostByIdWithNavProps));
         result.RouteValues.Should().ContainKey(nameof(PostModel.Id)).WhoseValue.Should().Be(postId);
     }
 
@@ -306,7 +306,7 @@ public class PostControllerTests
         A.CallTo(() => _fakeMapper.Map<PostResponseDTO>(post)).Returns(postResponseDTO);
         
         //Act
-        ActionResult<PostResponseDTO> result = await _postController.UpdatePost(postId, postUpdateDto);
+        ActionResult<PostResponseDTO> result = await _controller.UpdatePost(postId, postUpdateDto);
         
         //Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -325,7 +325,7 @@ public class PostControllerTests
         const int postId = 1;
         A.CallTo(() => _fakePostService.DeletePostAsync(postId)).Returns(true);
         //Act
-        IActionResult result = await _postController.DeletePost(postId);
+        IActionResult result = await _controller.DeletePost(postId);
         //Assert
         result.Should().BeOfType<NoContentResult>().Which.StatusCode.Should().Be(StatusCodes.Status204NoContent);
     }
@@ -338,7 +338,7 @@ public class PostControllerTests
         A.CallTo(() => _fakePostService.DeletePostAsync(postId)).Returns(false);
         
         //Act
-        IActionResult result = await _postController.DeletePost(postId);
+        IActionResult result = await _controller.DeletePost(postId);
         
         //Assert
         result.Should().BeOfType<NotFoundResult>().Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);

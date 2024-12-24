@@ -35,9 +35,6 @@ public class UserService(IUserDataLayer userDataLayer) : IUserService
             throw new NotFoundException($"User with id: {id} does not exist");
         }
 
-        existingUser.Name = userDTO.Name;
-        existingUser.Email = userDTO.Email;
-
         await userDataLayer.UpdateUserAsync(existingUser);
         return existingUser;
     }

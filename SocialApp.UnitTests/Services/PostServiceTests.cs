@@ -14,14 +14,14 @@ public class PostServiceTests
 {
     private IPostDataLayer _fakePostDataLayer;
     private IUserService _fakeUserService;
-    private PostService _postService;
+    private PostService _service;
 
     [SetUp]
     public void SetUp()
     {
         _fakeUserService = A.Fake<IUserService>();
         _fakePostDataLayer = A.Fake<IPostDataLayer>();
-        _postService = new PostService(_fakePostDataLayer, _fakeUserService);
+        _service = new PostService(_fakePostDataLayer, _fakeUserService);
     }
 
     #region GetAllPostsAsync
@@ -50,7 +50,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetAllPostsAsync()).Returns(posts);
         
         //Act
-        List<PostModel> result = await _postService.GetAllPostsAsync();
+        List<PostModel> result = await _service.GetAllPostsAsync();
 
         //Assert
         result.Should().BeEquivalentTo(posts);
@@ -87,7 +87,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments)).Returns(Task.FromResult<PostModel?>(post));
         
         //Act
-        PostModel? result = await _postService.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments);
+        PostModel? result = await _service.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments);
 
         //Assert
         result.Should().BeEquivalentTo(post);
@@ -114,7 +114,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments)).Returns(Task.FromResult<PostModel?>(post));
         
         //Act
-        PostModel? result = await _postService.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments);
+        PostModel? result = await _service.GetPostByIdWithNavPropsAsync(postId, includeUser, includeComments);
 
         //Assert
         result.Should().BeEquivalentTo(post);
@@ -151,7 +151,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostsByUserIdAsync(userId)).Returns(Task.FromResult(posts));
         
         //Act
-        List<PostModel> result = await _postService.GetPostsByUserIdAsync(userId);
+        List<PostModel> result = await _service.GetPostsByUserIdAsync(userId);
 
         //Assert
         result.Should().BeEquivalentTo(posts);
@@ -177,7 +177,7 @@ public class PostServiceTests
         A.CallTo(() => _fakeUserService.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(Task.FromResult<UserModel?>(null));
         
         //Act & Assert
-        ExceptionAssertions<NotFoundException> exception = await FluentActions.Invoking(() => _postService.CreatePostAsync(postCreateDTO)).Should()
+        ExceptionAssertions<NotFoundException> exception = await FluentActions.Invoking(() => _service.CreatePostAsync(postCreateDTO)).Should()
             .ThrowAsync<NotFoundException>();
         
         // Assert the exception message is correct
@@ -216,7 +216,7 @@ public class PostServiceTests
                 A<PostModel>.That.Matches(p => p.UserId == userId && p.Content == content && p.Title == title))).Returns(Task.FromResult(createdPost));
         
         //Act & Assert
-        PostModel result = await _postService.CreatePostAsync(postCreateDTO);
+        PostModel result = await _service.CreatePostAsync(postCreateDTO);
 
         // Assert the exception message is correct
         result.Should().BeEquivalentTo(createdPost);
@@ -239,7 +239,7 @@ public class PostServiceTests
         
         //Act & Assert
         ExceptionAssertions<NotFoundException> exception = await FluentActions
-            .Invoking(() => _postService.UpdatePostAsync(postId, postUpdateDTO)).Should()
+            .Invoking(() => _service.UpdatePostAsync(postId, postUpdateDTO)).Should()
             .ThrowAsync<NotFoundException>();
 
         // Assert the exception message is correct
@@ -281,7 +281,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(postId, false, false)).Returns(Task.FromResult<PostModel?>(existingPost));
         
         //Act 
-        PostModel result = await _postService.UpdatePostAsync(postId, postUpdateDTO);
+        PostModel result = await _service.UpdatePostAsync(postId, postUpdateDTO);
 
 
         // Assert the exception message is correct
@@ -302,7 +302,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(postId, false, false)).Returns(Task.FromResult<PostModel?>(null));
     
         //Act
-        bool result = await _postService.DeletePostAsync(postId);
+        bool result = await _service.DeletePostAsync(postId);
 
         //Assert
         result.Should().BeFalse();
@@ -326,7 +326,7 @@ public class PostServiceTests
         A.CallTo(() => _fakePostDataLayer.GetPostByIdWithNavPropsAsync(postId, false, false)).Returns(Task.FromResult<PostModel?>(post));
     
         //Act
-        bool result = await _postService.DeletePostAsync(postId);
+        bool result = await _service.DeletePostAsync(postId);
 
         //Assert
         result.Should().BeTrue();

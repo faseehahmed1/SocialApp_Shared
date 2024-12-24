@@ -12,13 +12,13 @@ namespace SocialApp.UnitTests.Services;
 public class UserServiceTests
 {
     private IUserDataLayer _fakeUserDataLayer;
-    private UserService _userService;
+    private UserService _service;
 
     [SetUp]
     public void SetUp()
     {
         _fakeUserDataLayer = A.Fake<IUserDataLayer>();
-        _userService = new UserService(_fakeUserDataLayer);
+        _service = new UserService(_fakeUserDataLayer);
     }
 
     #region GetAllUsersAsync
@@ -42,7 +42,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetAllUsersAsync()).Returns(Task.FromResult(expectedUsers));
         
         //Act
-        List<UserModel> result = await _userService.GetAllUsersAsync();
+        List<UserModel> result = await _service.GetAllUsersAsync();
         
         //Assert
         result.Should().HaveCount(expectedUsers.Count);
@@ -73,7 +73,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments)).Returns(Task.FromResult<UserModel?>(expectedUser));
         
         //Act
-        UserModel? result = await _userService.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
+        UserModel? result = await _service.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
 
         //Assert
         result.Should().NotBeNull();
@@ -99,7 +99,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments)).Returns(Task.FromResult<UserModel?>(expectedUser));
         
         //Act
-        UserModel? result = await _userService.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
+        UserModel? result = await _service.GetUserByIdWithNavPropsAsync(userId, includePosts, includeComments);
 
         //Assert
         result.Should().NotBeNull();
@@ -136,7 +136,7 @@ public class UserServiceTests
             u.Name == name && u.Email == email))).Returns(createdUser);
         
         //Act
-        UserModel result = await _userService.CreateUserAsync(userDTO);
+        UserModel result = await _service.CreateUserAsync(userDTO);
 
         //Assert
         result.Should().BeEquivalentTo(createdUser);
@@ -171,7 +171,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(updatedUser);
    
         //Act
-        UserModel result = await _userService.UpdateUserAsync(userId, userDTO);
+        UserModel result = await _service.UpdateUserAsync(userId, userDTO);
 
         //Assert
         result.Should().BeEquivalentTo(updatedUser);
@@ -196,7 +196,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(existingUser);
         
         // Act & Assert
-        ExceptionAssertions<NotFoundException> exception = await FluentActions.Invoking(() => _userService.UpdateUserAsync(userId, userDTO))
+        ExceptionAssertions<NotFoundException> exception = await FluentActions.Invoking(() => _service.UpdateUserAsync(userId, userDTO))
             .Should().ThrowAsync<NotFoundException>();
 
         // Assert the exception message is correct
@@ -226,7 +226,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(existingUser);
         
         //Act
-        bool result = await _userService.DeleteUserAsync(userId);
+        bool result = await _service.DeleteUserAsync(userId);
 
         //Assert
         A.CallTo(() => _fakeUserDataLayer.DeleteUserAsync(existingUser)).MustHaveHappened();
@@ -245,7 +245,7 @@ public class UserServiceTests
         A.CallTo(() => _fakeUserDataLayer.GetUserByIdWithNavPropsAsync(userId, false, false)).Returns(existingUser);
         
         //Act
-        bool result = await _userService.DeleteUserAsync(userId);
+        bool result = await _service.DeleteUserAsync(userId);
 
         //Assert
         A.CallTo(() => _fakeUserDataLayer.DeleteUserAsync(null!)).MustNotHaveHappened();

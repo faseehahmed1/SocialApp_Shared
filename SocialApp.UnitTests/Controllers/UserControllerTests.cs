@@ -16,14 +16,14 @@ public class UserControllerTests
 {
     private IUserService _fakeUserService = null!;
     private IMapper _fakeMapper = null!;
-    private UserController _userController = null!;
+    private UserController _controller = null!;
 
     [SetUp]
     public void SetUp()
     {
         _fakeUserService = A.Fake<IUserService>();
         _fakeMapper = A.Fake<IMapper>();
-        _userController = new UserController(_fakeUserService, _fakeMapper);
+        _controller = new UserController(_fakeUserService, _fakeMapper);
     }
 
     #region GetAllUsers
@@ -58,7 +58,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<List<UserResponseDTO>>(users)).Returns(usersResponseDTO);
         
         // Act
-        ActionResult<List<UserResponseDTO>> result = await _userController.GetAllUsers();
+        ActionResult<List<UserResponseDTO>> result = await _controller.GetAllUsers();
         // Assert
         OkObjectResult okResult = result.Result.Should().BeOfType<OkObjectResult>().Subject;
         okResult.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -96,7 +96,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).Returns(userResponseDTO);
         
         // Act
-        IActionResult result = await _userController.GetUserByIdWithNavProps(userId);
+        IActionResult result = await _controller.GetUserByIdWithNavProps(userId);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -124,7 +124,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).MustNotHaveHappened();
         
         // Act
-        IActionResult result = await _userController.GetUserByIdWithNavProps(userId, includePosts, includeComments);
+        IActionResult result = await _controller.GetUserByIdWithNavProps(userId, includePosts, includeComments);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>()
@@ -144,7 +144,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).MustNotHaveHappened();
         
         // Act
-        IActionResult result = await _userController.GetUserByIdWithNavProps(userId);
+        IActionResult result = await _controller.GetUserByIdWithNavProps(userId);
 
         // Assert
         result.Should().BeOfType<NotFoundResult>()
@@ -189,12 +189,12 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(user)).Returns(userResponseDTO);
         
         // Act
-        CreatedAtActionResult result = await  _userController.CreateUser(userDTO);
+        CreatedAtActionResult result = await  _controller.CreateUser(userDTO);
 
         // Assert
         result.StatusCode.Should().Be(StatusCodes.Status201Created);
         result.Value.Should().BeEquivalentTo(userResponseDTO);
-        result.ActionName.Should().Be(nameof(_userController.GetUserByIdWithNavProps));
+        result.ActionName.Should().Be(nameof(_controller.GetUserByIdWithNavProps));
         result.RouteValues.Should().ContainKey("id").WhoseValue.Should().Be(userId);
     }
 
@@ -235,7 +235,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeMapper.Map<UserResponseDTO>(updatedUser)).Returns(userResponseDTO);
         
         // Act
-        ActionResult<UserResponseDTO> result = await _userController.UpdateUser(userId, userDTO);
+        ActionResult<UserResponseDTO> result = await _controller.UpdateUser(userId, userDTO);
         
         // Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -253,7 +253,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeUserService.DeleteUserAsync(userId)).Returns(Task.FromResult(true));
 
         // Act
-        IActionResult result = await _userController.DeleteUser(userId);
+        IActionResult result = await _controller.DeleteUser(userId);
 
         // Assert
         result.Should().BeOfType<NoContentResult>().Which.StatusCode.Should().Be(StatusCodes.Status204NoContent);
@@ -267,7 +267,7 @@ public class UserControllerTests
         A.CallTo(() => _fakeUserService.DeleteUserAsync(userId)).Returns(Task.FromResult(false));
 
         // Act
-        IActionResult result = await _userController.DeleteUser(userId);
+        IActionResult result = await _controller.DeleteUser(userId);
 
         // Assert
         result.Should().BeOfType<NotFoundResult>().Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);

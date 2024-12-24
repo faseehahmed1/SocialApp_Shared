@@ -14,7 +14,7 @@ public class CommentServiceTests
     private ICommentDataLayer _fakeCommentDataLayer;
     private IUserDataLayer _fakeUserDataLayer;
     private IPostDataLayer _fakePostDataLayer;
-    private CommentService _commentService;
+    private CommentService _service;
     
     [SetUp]
     public void SetUp()
@@ -22,7 +22,7 @@ public class CommentServiceTests
         _fakeCommentDataLayer = A.Fake<ICommentDataLayer>();
         _fakeUserDataLayer = A.Fake<IUserDataLayer>();
         _fakePostDataLayer = A.Fake<IPostDataLayer>();
-        _commentService = new CommentService(_fakeCommentDataLayer, _fakeUserDataLayer, _fakePostDataLayer);
+        _service = new CommentService(_fakeCommentDataLayer, _fakeUserDataLayer, _fakePostDataLayer);
     }
 
     #region GetAllCommentsAsync
@@ -45,7 +45,7 @@ public class CommentServiceTests
         A.CallTo(() => _fakeCommentDataLayer.GetAllCommentsAsync()).Returns(Task.FromResult(comments));
         
         //Act
-        List<CommentModel> result = await _commentService.GetAllCommentsAsync();
+        List<CommentModel> result = await _service.GetAllCommentsAsync();
 
         //Assert
         result.Should().BeEquivalentTo(comments);
@@ -92,7 +92,7 @@ public class CommentServiceTests
        
         //Act
         CommentModel? result =
-            await _commentService.GetCommentByIdWithNavPropsAsync(commentId, includeUser, includePost);
+            await _service.GetCommentByIdWithNavPropsAsync(commentId, includeUser, includePost);
         
         //Assert
         result.Should().BeEquivalentTo(comment);
@@ -148,7 +148,7 @@ public class CommentServiceTests
             .Returns(Task.FromResult<PostModel?>(post));
         
         //Act
-        CommentModel result = await _commentService.CreateCommentAsync(commentCreateDTO);
+        CommentModel result = await _service.CreateCommentAsync(commentCreateDTO);
 
         //Assert
         result.Should().BeEquivalentTo(comment);
@@ -178,7 +178,7 @@ public class CommentServiceTests
         
         //Act && Assert
         ExceptionAssertions<NotFoundException> exception = await FluentActions
-            .Invoking(() => _commentService.CreateCommentAsync(commentCreateDTO)).Should()
+            .Invoking(() => _service.CreateCommentAsync(commentCreateDTO)).Should()
             .ThrowAsync<NotFoundException>();
 
         //Assert
@@ -203,7 +203,7 @@ public class CommentServiceTests
         
         //Act & Assert
         ExceptionAssertions<NotFoundException> exception = await FluentActions
-            .Invoking(() => _commentService.UpdateCommentAsync(commentId, commentUpdateDTO)).Should()
+            .Invoking(() => _service.UpdateCommentAsync(commentId, commentUpdateDTO)).Should()
             .ThrowAsync<NotFoundException>();
 
         //Assert
@@ -248,7 +248,7 @@ public class CommentServiceTests
         A.CallTo(() => _fakeCommentDataLayer.GetCommentByIdWithNavPropsAsync(commentId, false, false)).Returns(Task.FromResult<CommentModel?>(comment));
         
         //Act & Assert
-        CommentModel result = await _commentService.UpdateCommentAsync(commentId, commentUpdateDTO);
+        CommentModel result = await _service.UpdateCommentAsync(commentId, commentUpdateDTO);
 
         //Assert
         result.Should().BeEquivalentTo(comment);
@@ -267,7 +267,7 @@ public class CommentServiceTests
         A.CallTo(() => _fakeCommentDataLayer.GetCommentByIdWithNavPropsAsync(commentId, false, false)).Returns(Task.FromResult<CommentModel?>(null));
         
         //Act
-        bool result = await _commentService.DeleteCommentAsync(commentId);
+        bool result = await _service.DeleteCommentAsync(commentId);
         //Assert
         result.Should().BeFalse();
 
@@ -306,7 +306,7 @@ public class CommentServiceTests
         A.CallTo(() => _fakeCommentDataLayer.GetCommentByIdWithNavPropsAsync(commentId, false, false)).Returns(Task.FromResult<CommentModel?>(comment));
         
         //Act
-        bool result = await _commentService.DeleteCommentAsync(commentId);
+        bool result = await _service.DeleteCommentAsync(commentId);
         //Assert
         result.Should().BeTrue();
 

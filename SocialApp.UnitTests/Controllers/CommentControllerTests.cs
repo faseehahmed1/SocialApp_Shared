@@ -15,14 +15,14 @@ public class CommentControllerTests
 {
     private ICommentService _fakeCommentService;
     private IMapper _fakeMapper;
-    private CommentController _commentController;
+    private CommentController _controller;
 
     [SetUp]
     public void SetUp()
     {
         _fakeCommentService = A.Fake<ICommentService>();
         _fakeMapper = A.Fake<IMapper>();
-        _commentController = new CommentController(_fakeCommentService, _fakeMapper);
+        _controller = new CommentController(_fakeCommentService, _fakeMapper);
     }
 
     #region GetAllComments
@@ -74,7 +74,7 @@ public class CommentControllerTests
         A.CallTo(() => _fakeMapper.Map<List<CommentResponseDTO>>(comments)).Returns(commentResponseDtOs);
         
         //Act
-        ActionResult<CommentResponseDTO> result = await _commentController.GetAllComments();
+        ActionResult<CommentResponseDTO> result = await _controller.GetAllComments();
 
         //Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -120,7 +120,7 @@ public class CommentControllerTests
         A.CallTo(() => _fakeCommentService.GetCommentByIdWithNavPropsAsync(commentId, includeUser, includePost)).Returns(Task.FromResult<CommentModel?>(comment));
 
         //Act
-        IActionResult result = await _commentController.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
+        IActionResult result = await _controller.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
 
         //Assert
         result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -173,7 +173,7 @@ public class CommentControllerTests
         A.CallTo(() => _fakeMapper.Map<CommentResponseDTO>(comment)).Returns(commentResponseDTO);
         
         //Act
-        IActionResult result = await _commentController.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
+        IActionResult result = await _controller.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
 
         //Assert
         result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -194,7 +194,7 @@ public class CommentControllerTests
         A.CallTo(() => _fakeCommentService.GetCommentByIdWithNavPropsAsync(commentId, includeUser, includePost)).Returns(Task.FromResult<CommentModel?>(comment));
         
         //Act
-        IActionResult result = await _commentController.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
+        IActionResult result = await _controller.GetCommentByIdWithNavProps(commentId, includeUser, includePost);
 
         //Assert
         result.Should().BeOfType<NotFoundResult>().Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
@@ -255,12 +255,12 @@ public class CommentControllerTests
         A.CallTo(() => _fakeCommentService.CreateCommentAsync(commentCreateDTO)).Returns(Task.FromResult(comment));
         A.CallTo(() => _fakeMapper.Map<CommentResponseDTO>(comment)).Returns(commentResponseDTO);
         //Act
-        CreatedAtActionResult result = await _commentController.CreateComment(commentCreateDTO);
+        CreatedAtActionResult result = await _controller.CreateComment(commentCreateDTO);
 
         //Assert
         result.StatusCode.Should().Be(StatusCodes.Status201Created);
         result.Value.Should().BeEquivalentTo(commentResponseDTO);
-        result.ActionName.Should().Be(nameof(_commentController.GetCommentByIdWithNavProps));
+        result.ActionName.Should().Be(nameof(_controller.GetCommentByIdWithNavProps));
         result.RouteValues.Should().ContainKey(nameof(CommentModel.Id)).WhoseValue.Should().Be(commentId);
 
     }
@@ -317,7 +317,7 @@ public class CommentControllerTests
         A.CallTo(() => _fakeCommentService.UpdateCommentAsync(commentId, commentUpdateDTO)).Returns(comment);
         A.CallTo(() => _fakeMapper.Map<CommentResponseDTO>(comment)).Returns(commentResponseDTO);
         //Act
-        ActionResult<CommentResponseDTO> result = await _commentController.UpdateComment(commentId, commentUpdateDTO);
+        ActionResult<CommentResponseDTO> result = await _controller.UpdateComment(commentId, commentUpdateDTO);
 
         //Assert
         result.Result.Should().BeOfType<OkObjectResult>().Which.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -336,7 +336,7 @@ public class CommentControllerTests
         const int commentId = 5;
         A.CallTo(() => _fakeCommentService.DeleteCommentAsync(commentId)).Returns(Task.FromResult(false));
         //Act
-        IActionResult result = await _commentController.DeleteComment(commentId);
+        IActionResult result = await _controller.DeleteComment(commentId);
 
         //Assert
         result.Should().BeOfType<NotFoundResult>().Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
@@ -350,7 +350,7 @@ public class CommentControllerTests
         const int commentId = 5;
         A.CallTo(() => _fakeCommentService.DeleteCommentAsync(commentId)).Returns(Task.FromResult(true));
         //Act
-        IActionResult result = await _commentController.DeleteComment(commentId);
+        IActionResult result = await _controller.DeleteComment(commentId);
 
         //Assert
         result.Should().BeOfType<NoContentResult>().Which.StatusCode.Should().Be(StatusCodes.Status204NoContent);
